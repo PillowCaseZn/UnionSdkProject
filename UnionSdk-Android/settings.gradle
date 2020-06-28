@@ -1,0 +1,3 @@
+include ':UnionSdk'
+include ':Demo'
+rootProject.name = "UnionSdk-Android"
