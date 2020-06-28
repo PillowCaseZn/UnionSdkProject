@@ -5,7 +5,7 @@ import android.app.Application;
 /**
  * Author      : PillowCase
  * Create On   : 2020-06-28 23:12
- * Description :
+ * Description : 聚合SDK Application
  */
 public class UnionApplication extends Application {
     @Override

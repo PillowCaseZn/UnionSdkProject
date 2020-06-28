@@ -5,7 +5,7 @@ import com.pillowcase.union.UnionApplication;
 /**
  * Author      : PillowCase
  * Create On   : 2020-06-28 23:11
- * Description :
+ * Description : 游戏主Application
  */
 public class GameApplication extends UnionApplication {
     @Override
