@@ -25,7 +25,7 @@
 - [ISdkCallbacks](UnionSdk/src/main/java/com/pillowcase/union/intefaces/ISdkCallbacks.java) - 聚合SDK 回调接口 
 	> | 接口名 | 接口说明 | 返回参数 |
 	> | ----- | ----- | ----- |
-	> | initCallback | 初始化回调接口 | |
+	> | initCallback | 初始化回调接口 | ----- |
 	
 - [] ()
 	  

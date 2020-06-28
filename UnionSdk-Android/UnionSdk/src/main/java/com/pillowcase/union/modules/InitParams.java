@@ -17,4 +17,19 @@ public class InitParams {
      */
     private String appId;
 
+    public Activity getGameActivity() {
+        return gameActivity;
+    }
+
+    public void setGameActivity(Activity gameActivity) {
+        this.gameActivity = gameActivity;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
 }

@@ -83,39 +83,4 @@ public class UnionSdk implements ISdkMethods {
     public void onConfigurationChanged(Activity gameActivity, Configuration newConfig) {
 
     }
-
-    @Override
-    public void onActivityCreated(Activity gameActivity, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onActivityStarted(Activity gameActivity) {
-
-    }
-
-    @Override
-    public void onActivityResumed(Activity gameActivity) {
-
-    }
-
-    @Override
-    public void onActivityPaused(Activity gameActivity) {
-
-    }
-
-    @Override
-    public void onActivityStopped(Activity gameActivity) {
-
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity gameActivity, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onActivityDestroyed(Activity gameActivity) {
-
-    }
 }
