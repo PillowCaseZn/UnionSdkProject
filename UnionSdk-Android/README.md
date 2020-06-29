@@ -12,6 +12,9 @@
 ## Using Document - 使用文档
 
 
+## Attention - 注意事项
+- 根项目 gradle 版本为3.5.3 
+
 ## Params Description - 参数说明
 - [InitParams](UnionSdk/src/main/java/com/pillowcase/union/modules/InitParams.java) - 初始化参数
 	> | 参数名 | 参数类型 | 参数说明 |
@@ -23,9 +26,10 @@
 
 ## Interface Description - 接口说明
 - [ISdkCallbacks](UnionSdk/src/main/java/com/pillowcase/union/intefaces/ISdkCallbacks.java) - 聚合SDK 回调接口 
-	> | 接口名 | 接口说明 | 返回参数 |
+	> | 接口名 | 接口说明 | 参数 |
 	> | ----- | ----- | ----- |
-	> | initCallback | 初始化回调接口 | ----- |
+	> | initSuccess | 初始化成功回调接口 | ----- |
+	> | onErrorCallback | 错误信息回调接口 | ----- |
 	
 - [] ()
 	  

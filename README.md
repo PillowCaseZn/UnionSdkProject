@@ -12,12 +12,9 @@
 
 
 ## UpdateLog - [更新日志](ReadMe/UPDATELOG.md)
-#### 1.0.0 - 2020-06-28  
-- Add - 新增
-	- Android 聚合项目工程 [UnionSdk-Android](UnionSdk-Android)
-	- 聚合打包脚本 [UnionPackageScripts](UnionPackageScripts) 
-	- 记录文件存放文件夹 [ReadMe](ReadMe)
-	- 公用、常用Jar [libs](libs)
+#### 1.0.0 - 2020-06-29
+- Update - 更新
+    - 更新 gitignore 文件
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

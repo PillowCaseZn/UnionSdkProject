@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.pillowcase.union.UnionSdk;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
+import com.pillowcase.union.modules.Code;
 import com.pillowcase.union.modules.InitParams;
 
 /**
@@ -25,8 +26,14 @@ public class GameActivity extends Activity {
         params.setGameActivity(this);
         params.setAppId("");
         UnionSdk.getInstance().init(params, new ISdkCallbacks() {
+
             @Override
-            public void initCallback() {
+            public void initSuccess() {
+
+            }
+
+            @Override
+            public void onErrorCallback(Code errorCode, String errorMsg) {
 
             }
         });
