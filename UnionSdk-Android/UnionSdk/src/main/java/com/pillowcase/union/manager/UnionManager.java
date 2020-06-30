@@ -31,6 +31,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     private final boolean isDebug = true;
 
     private IApplicationListener mApplicationListener;
+    /**
+     * 游戏 Activity 生命周期监听
+     */
+    private GameActivityLifecycleCallback mLifecycleCallback;
 
     public static UnionManager getInstance() {
         return ourInstance;
@@ -109,6 +113,14 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void onNewIntent(Activity gameActivity, Intent intent) {
         try {
             log("onNewIntent", "");
+            if (mLifecycleCallback != null) {
+                gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLifecycleCallback.onNewIntent(gameActivity, intent);
+                    }
+                });
+            }
         } catch (Exception e) {
             error(e, "onNewIntent");
         }
@@ -118,6 +130,14 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void onActivityResult(Activity gameActivity, int requestCode, int resultCode, Intent data) {
         try {
             log("onActivityResult", "");
+            if (mLifecycleCallback != null) {
+                gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLifecycleCallback.onActivityResult(gameActivity, requestCode, resultCode, data);
+                    }
+                });
+            }
         } catch (Exception e) {
             error(e, "onActivityResult");
         }
@@ -127,6 +147,14 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void onRestart(Activity gameActivity) {
         try {
             log("onRestart", "");
+            if (mLifecycleCallback != null) {
+                gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLifecycleCallback.onRestart(gameActivity);
+                    }
+                });
+            }
         } catch (Exception e) {
             error(e, "onRestart");
         }
@@ -136,6 +164,14 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void onRequestPermissionsResult(Activity gameActivity, int requestCode, String[] permissions, int[] grantResults) {
         try {
             log("onRequestPermissionsResult", "");
+            if (mLifecycleCallback != null) {
+                gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLifecycleCallback.onRequestPermissionsResult(gameActivity, requestCode, permissions, grantResults);
+                    }
+                });
+            }
         } catch (Exception e) {
             error(e, "onRequestPermissionsResult");
         }
@@ -145,6 +181,14 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void onConfigurationChanged(Activity gameActivity, Configuration newConfig) {
         try {
             log("onConfigurationChanged", "");
+            if (mLifecycleCallback != null) {
+                gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLifecycleCallback.onConfigurationChanged(gameActivity, newConfig);
+                    }
+                });
+            }
         } catch (Exception e) {
             error(e, "onConfigurationChanged");
         }
@@ -156,6 +200,12 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
             log("onApplicationCreate", "");
             if (mApplicationListener != null) {
                 mApplicationListener.onApplicationCreate(application);
+            }
+
+            //注册全局 Activity 生命周期监听
+            if (application != null && mLifecycleCallback != null) {
+                mLifecycleCallback = new GameActivityLifecycleCallback();
+                application.registerActivityLifecycleCallbacks(mLifecycleCallback);
             }
         } catch (Exception e) {
             error(e, "onApplicationCreate");
@@ -222,6 +272,13 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
             error(e, "getProxyApplication");
         }
         return listener;
+    }
+
+    /**
+     * @return 是否Debug模式
+     */
+    public boolean isDebug() {
+        return isDebug;
     }
 
     @Override

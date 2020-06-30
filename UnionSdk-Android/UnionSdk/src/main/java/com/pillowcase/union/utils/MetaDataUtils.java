@@ -23,13 +23,13 @@ public class MetaDataUtils implements ILoggerOperation {
 
     public MetaDataUtils() {
         if (mLoggerUtils == null) {
-            mLoggerUtils = new LoggerUtils(true, getClass().getSimpleName());
+            mLoggerUtils = new LoggerUtils(UnionManager.getInstance().isDebug(), getClass().getSimpleName());
         }
     }
 
     /**
      * @param context 上下文
-     * @param key MetaData 属性 Key
+     * @param key     MetaData 属性 Key
      */
     public String getMetaData(Context context, String key) {
         try {
