@@ -46,7 +46,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    api files('libs/com.pillowcase.logger-1.1.0.jar')
+    implementation files('libs/com.pillowcase.logger-1.1.0.jar')
 }
 
 //Copy类型

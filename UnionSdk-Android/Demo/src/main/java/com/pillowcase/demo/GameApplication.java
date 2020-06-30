@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 
-import com.pillowcase.union.UnionApplication;
+import com.pillowcase.union.UnionSdk;
 
 /**
  * Author      : PillowCase
@@ -12,9 +12,11 @@ import com.pillowcase.union.UnionApplication;
  * Description : 游戏主Application
  */
 public class GameApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
+        UnionSdk.getInstance().onApplicationCreate(this);
     }
 
     /**
@@ -22,15 +24,17 @@ public class GameApplication extends Application {
      */
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-
+        UnionSdk.getInstance().onApplicationAttachBaseContext(this, base);
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        UnionSdk.getInstance().onApplicationConfigurationChanged(this, newConfig);
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
+        UnionSdk.getInstance().onApplicationTerminate(this);
     }
 }

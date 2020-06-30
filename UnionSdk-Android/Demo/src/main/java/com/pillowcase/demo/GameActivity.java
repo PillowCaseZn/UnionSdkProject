@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.pillowcase.union.UnionSdk;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
-import com.pillowcase.union.modules.Code;
 import com.pillowcase.union.modules.InitParams;
 
 /**
@@ -25,17 +25,17 @@ public class GameActivity extends Activity {
 
         InitParams params = new InitParams();
         params.setGameActivity(this);
-        params.setAppId("");
+        params.setAppId("1");
         UnionSdk.getInstance().init(params, new ISdkCallbacks() {
 
             @Override
             public void initSuccess() {
-
+                log("initSuccess", "");
             }
 
             @Override
-            public void onErrorCallback(Code errorCode, String errorMsg) {
-
+            public void onErrorCallback(int errorCode, String errorMsg) {
+                log("onErrorCallback", "ErrorCode : " + errorCode + " , ErrorMsg : " + errorMsg);
             }
         });
     }
@@ -96,4 +96,7 @@ public class GameActivity extends Activity {
         UnionSdk.getInstance().onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
+    public void log(String s, Object o) {
+        Log.i("Demo", "Method : " + s + "\nMessage : " + o);
+    }
 }

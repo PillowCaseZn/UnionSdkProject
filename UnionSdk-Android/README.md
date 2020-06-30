@@ -6,8 +6,8 @@
 
 ## Directory - [目录](https://github.com/PillowCaseZn/UnionSdkProject/tree/master/UnionSdk-Android)
 - [Demo](Demo) - 聚合项目Demo
--  [UnionSdk](UnionSdk) - 聚合SDK
--  []() 
+- [UnionSdk](UnionSdk) - 聚合SDK
+- []() 
 
 ## Using Document - 使用文档
 
@@ -30,6 +30,7 @@
 	> | ----- | ----- | ----- |
 	> | initSuccess | 初始化成功回调接口 | ----- |
 	> | onErrorCallback | 错误信息回调接口 | ----- |
+	
 	
 - [] ()
 	  

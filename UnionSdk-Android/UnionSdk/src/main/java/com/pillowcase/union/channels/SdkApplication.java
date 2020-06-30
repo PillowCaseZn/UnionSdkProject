@@ -13,10 +13,10 @@ import com.pillowcase.union.intefaces.IApplicationListener;
  * Created On  ： 2020-06-29 11:56
  * Description ： 聚合SDK 自带默认SDK Application
  */
-public class DefaultSdkApplication implements IApplicationListener, ILoggerOperation {
+public class SdkApplication implements IApplicationListener, ILoggerOperation {
     private LoggerUtils mLoggerUtils;
 
-    public DefaultSdkApplication() {
+    public SdkApplication() {
         if (mLoggerUtils == null) {
             mLoggerUtils = new LoggerUtils(true, getClass().getSimpleName());
         }

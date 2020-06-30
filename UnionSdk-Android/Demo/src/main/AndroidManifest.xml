@@ -18,12 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- 指定渠道Application-->
-        <!-- 如果是直接继承使用com.pillowcase.union.UnionApplication，则可不需要配置该meta-data属性-->
-        <meta-data
-            android:name="APPLICATION_PROXY_NAME"
-            android:value="com.pillowcase.union.channels.DefaultSdkApplication" />
     </application>
 
 </manifest>

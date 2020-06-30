@@ -1,7 +1,5 @@
 package com.pillowcase.union.intefaces;
 
-import com.pillowcase.union.modules.Code;
-
 /**
  * Author      : PillowCase
  * Create On   : 2020-06-28 23:53
@@ -19,5 +17,5 @@ public interface ISdkCallbacks {
      * @param errorCode 错误码
      * @param errorMsg  错误信息
      */
-    void onErrorCallback(Code errorCode, String errorMsg);
+    void onErrorCallback(int errorCode, String errorMsg);
 }

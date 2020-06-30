@@ -2,4 +2,11 @@
     package="com.pillowcase.union">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <!-- 指定渠道Application 默认使用UnionSdk自带的Application-->
+        <meta-data
+            android:name="APPLICATION_PROXY_NAME"
+            android:value="com.pillowcase.union.channels.SdkApplication" />
+    </application>
 </manifest>

@@ -1,10 +1,12 @@
 package com.pillowcase.union.manager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.pillowcase.logger.LoggerUtils;
@@ -12,9 +14,15 @@ import com.pillowcase.logger.impl.ILoggerOperation;
 import com.pillowcase.union.intefaces.IApplicationListener;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
 import com.pillowcase.union.intefaces.ISdkMethods;
+import com.pillowcase.union.modules.Code;
 import com.pillowcase.union.modules.InitParams;
+import com.pillowcase.union.modules.Message;
 import com.pillowcase.union.modules.MetaDataConfig;
 import com.pillowcase.union.utils.MetaDataUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Author      :  PillowCase
@@ -25,6 +33,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     private static final UnionManager ourInstance = new UnionManager();
 
     private LoggerUtils mLoggerUtils;
+    private Activity gameActivity;
     /**
      * 是否Debug模式
      */
@@ -35,6 +44,20 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
      * 游戏 Activity 生命周期监听
      */
     private GameActivityLifecycleCallback mLifecycleCallback;
+
+    /**
+     * 是否已成功初始化
+     */
+    private boolean isInit = false;
+
+    /**
+     * 初始化参数
+     */
+    private InitParams mInitParams;
+    /**
+     * SDK 回调接口
+     */
+    private ISdkCallbacks mSdkCallbacks;
 
     public static UnionManager getInstance() {
         return ourInstance;
@@ -50,6 +73,29 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void init(InitParams params, ISdkCallbacks callbacks) {
         try {
             log("init", "");
+            if (this.mSdkCallbacks == null) {
+                this.mSdkCallbacks = callbacks;
+            }
+
+            if (isInit) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.IS_INIT);
+                return;
+            }
+            //检查初始化参数
+            if (checkInitParams(params)) {
+                this.mInitParams = params;
+                this.gameActivity = params.getGameActivity();
+
+                log("initSdk", "Version:" + Build.VERSION.SDK_INT);
+                //判断Android 系统版本是否大于P(28)
+                if (Build.VERSION.SDK_INT >= 28) {
+                    closeAndroidPDialog();
+                }
+
+
+            } else {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+            }
         } catch (Exception e) {
             error(e, "init");
         }
@@ -59,6 +105,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void login() {
         try {
             log("login", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
         } catch (Exception e) {
             error(e, "login");
         }
@@ -68,6 +118,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void switchLogin() {
         try {
             log("switchLogin", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
         } catch (Exception e) {
             error(e, "switchLogin");
         }
@@ -77,6 +131,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void submitRoleInfo() {
         try {
             log("submitRoleInfo", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
         } catch (Exception e) {
             error(e, "submitRoleInfo");
         }
@@ -86,6 +144,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void logout() {
         try {
             log("logout", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
         } catch (Exception e) {
             error(e, "logout");
         }
@@ -95,6 +157,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void pay() {
         try {
             log("pay", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
         } catch (Exception e) {
             error(e, "pay");
         }
@@ -250,6 +316,41 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     }
 
     /**
+     * 去掉在Android P上的提醒弹窗 （Detected problems with API compatibility(visit g.co/dev/appcompat for more info)
+     */
+    private void closeAndroidPDialog() {
+        log("closeAndroidPDialog", "");
+        try {
+            @SuppressLint("PrivateApi") Class aClass = Class.forName("android.content.pm.PackageParser$Package");
+            Constructor declaredConstructor = aClass.getDeclaredConstructor(String.class);
+            declaredConstructor.setAccessible(true);
+
+            @SuppressLint("PrivateApi") Class cls = Class.forName("android.app.ActivityThread");
+            @SuppressLint("DiscouragedPrivateApi") Method declaredMethod = cls.getDeclaredMethod("currentActivityThread");
+            declaredMethod.setAccessible(true);
+            Object activityThread = declaredMethod.invoke(null);
+            Field mHiddenApiWarningShown = cls.getDeclaredField("mHiddenApiWarningShown");
+            mHiddenApiWarningShown.setAccessible(true);
+            mHiddenApiWarningShown.setBoolean(activityThread, true);
+        } catch (Exception e) {
+            error(e, "closeAndroidPDialog");
+        }
+    }
+
+    /**
+     * @param params 初始化参数
+     * @return 初始化参数是否齐全
+     */
+    private boolean checkInitParams(InitParams params) {
+        try {
+            return (params.getGameActivity() != null && !params.getAppId().isEmpty() && params.getAppId().length() > 0);
+        } catch (Exception e) {
+            error(e, "checkInitParams");
+        }
+        return false;
+    }
+
+    /**
      * 获取要使用的Application
      *
      * @param context 上下文
@@ -262,7 +363,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
 
             if (proxyName == null || TextUtils.isEmpty(proxyName)) {
                 log("getProxyApplication", "No ProxyApplication Config , Use Default Application");
-                proxyName = "com.pillowcase.union.channels.DefaultSdkApplication";
+                proxyName = "com.pillowcase.union.channels.SdkApplication";
             }
             log("getProxyApplication", "Proxy Name : " + proxyName);
 
