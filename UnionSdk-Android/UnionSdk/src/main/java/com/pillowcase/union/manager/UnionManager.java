@@ -81,7 +81,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.IS_INIT);
                 return;
             }
-            // TODO: 2020/7/1 Android Q版本 的权限判断
+            // TODO: 2020/7/1 Android M 版本 的权限判断
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            }
 
             //检查初始化参数
             if (checkInitParams(params)) {
@@ -89,7 +92,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 this.gameActivity = params.getGameActivity();
 
                 //判断Android 系统版本是否大于P(28)
-                if (Build.VERSION.SDK_INT >= 28) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     closeAndroidPDialog();
                 }
 
@@ -99,6 +102,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                     log("init", "No MergeChannel Config , Use Default MergeChannel");
                     mergeChannel = "0";
                 }
+                log("init", "MergeChannel : " + mergeChannel);
 
                 // TODO: 2020/7/1 分包id处理逻辑要根据后期Python打包脚本来定义
                 //获取分包ID
@@ -110,6 +114,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                     log("init", "No Plugin Channel User Config , Use Default Plugin Channel User");
                     pluginChannelUser = "com.pillowcase.union.channels.SdkUser";
                 }
+                log("init", "Plugin Channel User : " + pluginChannelUser);
 
                 //用户支付插件
                 String pluginChannelPay = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_PAY);
@@ -117,6 +122,11 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                     log("init", "No Plugin Channel Pay Config , Use Default Plugin Channel Pay");
                     pluginChannelPay = "com.pillowcase.union.channels.SdkPay";
                 }
+                log("init", "Plugin Channel Pay : " + pluginChannelPay);
+
+                //请求服务器，获取渠道配置参数信息
+
+
             } else {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
             }
