@@ -4,9 +4,21 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <!-- 指定渠道Application 默认使用UnionSdk自带的Application-->
-        <meta-data
-            android:name="APPLICATION_PROXY_NAME"
-            android:value="com.pillowcase.union.channels.SdkApplication" />
+<!--        &lt;!&ndash; 指定渠道Application 默认使用UnionSdk自带的Application&ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="APPLICATION_PROXY_NAME"-->
+<!--            android:value="com.pillowcase.union.channels.SdkApplication" />-->
+<!--        &lt;!&ndash; 指定使用的渠道的用户登录插件&ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="PLUGIN_CHANNEL_USER"-->
+<!--            android:value="com.pillowcase.union.channels.SdkUser" />-->
+<!--        &lt;!&ndash; 指定使用的渠道的用户支付插件&ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="PLUGIN_CHANNEL_PAY"-->
+<!--            android:value="com.pillowcase.union.channels.SdkPay" />-->
+<!--        &lt;!&ndash; 平台渠道号&ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="MERGE_CHANNEL"-->
+<!--            android:value="0" />-->
     </application>
 </manifest>

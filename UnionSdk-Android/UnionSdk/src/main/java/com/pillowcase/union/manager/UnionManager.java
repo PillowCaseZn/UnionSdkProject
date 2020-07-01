@@ -81,18 +81,42 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.IS_INIT);
                 return;
             }
+            // TODO: 2020/7/1 Android Q版本 的权限判断
+
             //检查初始化参数
             if (checkInitParams(params)) {
                 this.mInitParams = params;
                 this.gameActivity = params.getGameActivity();
 
-                log("initSdk", "Version:" + Build.VERSION.SDK_INT);
                 //判断Android 系统版本是否大于P(28)
                 if (Build.VERSION.SDK_INT >= 28) {
                     closeAndroidPDialog();
                 }
 
+                //平台渠道号  0:默认SDK
+                String mergeChannel = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.MERGE_CHANNEL);
+                if (mergeChannel.isEmpty()) {
+                    log("init", "No MergeChannel Config , Use Default MergeChannel");
+                    mergeChannel = "0";
+                }
 
+                // TODO: 2020/7/1 分包id处理逻辑要根据后期Python打包脚本来定义
+                //获取分包ID
+                String subPackageId = "";
+
+                //用户登录插件
+                String pluginChannelUser = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_USER);
+                if (pluginChannelUser == null || pluginChannelUser.isEmpty()) {
+                    log("init", "No Plugin Channel User Config , Use Default Plugin Channel User");
+                    pluginChannelUser = "com.pillowcase.union.channels.SdkUser";
+                }
+
+                //用户支付插件
+                String pluginChannelPay = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_PAY);
+                if (pluginChannelPay == null || pluginChannelPay.isEmpty()) {
+                    log("init", "No Plugin Channel Pay Config , Use Default Plugin Channel Pay");
+                    pluginChannelPay = "com.pillowcase.union.channels.SdkPay";
+                }
             } else {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
             }
