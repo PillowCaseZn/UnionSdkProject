@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import com.pillowcase.logger.LoggerUtils;
 import com.pillowcase.logger.impl.ILoggerOperation;
 import com.pillowcase.union.intefaces.IApplicationListener;
+import com.pillowcase.union.intefaces.IJsonCallBack;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
 import com.pillowcase.union.intefaces.ISdkMethods;
 import com.pillowcase.union.modules.Code;
@@ -125,8 +126,17 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 log("init", "Plugin Channel Pay : " + pluginChannelPay);
 
                 //请求服务器，获取渠道配置参数信息
+                UnionApiManager.getInstance().getChannelConfig(new IJsonCallBack() {
+                    @Override
+                    public void onSuccess(String json) {
 
+                    }
 
+                    @Override
+                    public void onError(int code, String errorMsg) {
+                        mSdkCallbacks.onErrorCallback(code, errorMsg);
+                    }
+                });
             } else {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
             }
@@ -414,6 +424,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
      */
     public boolean isDebug() {
         return isDebug;
+    }
+
+    public Activity getGameActivity() {
+        return gameActivity;
     }
 
     @Override

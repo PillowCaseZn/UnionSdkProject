@@ -2,6 +2,9 @@ package com.pillowcase.union.manager;
 
 import com.pillowcase.logger.LoggerUtils;
 import com.pillowcase.logger.impl.ILoggerOperation;
+import com.pillowcase.union.intefaces.IJsonCallBack;
+import com.pillowcase.union.modules.Code;
+import com.pillowcase.utils.NetUtils;
 
 /**
  * Author      :  PillowCase
@@ -12,6 +15,7 @@ public class UnionApiManager implements ILoggerOperation {
     private static final UnionApiManager ourInstance = new UnionApiManager();
 
     private LoggerUtils mLoggerUtils;
+    private NetUtils mNetUtils;
 
     public static UnionApiManager getInstance() {
         return ourInstance;
@@ -21,15 +25,24 @@ public class UnionApiManager implements ILoggerOperation {
         if (mLoggerUtils == null) {
             mLoggerUtils = new LoggerUtils(UnionManager.getInstance().isDebug(), getClass().getSimpleName());
         }
+        if (mNetUtils == null) {
+            mNetUtils = new NetUtils(UnionManager.getInstance().getGameActivity());
+        }
     }
 
     /**
      * 获取渠道配置信息
      */
-    public void getChannelConfig() {
+    public void getChannelConfig(IJsonCallBack callBack) {
         try {
             log("getChannelConfig", "");
             // TODO: 2020/7/1 判断网络是否连接成功
+
+            if (!mNetUtils.isNetConnect()) {
+                callBack.onError(Code.NETWORK_ERROR, "请检查网络连接");
+                return;
+            }
+
         } catch (Exception e) {
             error(e, "getChannelConfig");
         }
