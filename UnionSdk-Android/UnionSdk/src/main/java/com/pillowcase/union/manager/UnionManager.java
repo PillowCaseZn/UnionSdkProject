@@ -9,12 +9,14 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.pillowcase.logger.LoggerUtils;
 import com.pillowcase.logger.impl.ILoggerOperation;
 import com.pillowcase.union.intefaces.IApplicationListener;
 import com.pillowcase.union.intefaces.IJsonCallBack;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
 import com.pillowcase.union.intefaces.ISdkMethods;
+import com.pillowcase.union.modules.ApiResultBean;
 import com.pillowcase.union.modules.Code;
 import com.pillowcase.union.modules.InitParams;
 import com.pillowcase.union.modules.Message;
@@ -129,7 +131,11 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 UnionApiManager.getInstance().getChannelConfig(new IJsonCallBack() {
                     @Override
                     public void onSuccess(String json) {
-
+                        ApiResultBean bean = new Gson().fromJson(json, ApiResultBean.class);
+                        log("onSuccess", "Api Result Bean : " + bean);
+                        if (bean.getCode() == Code.SUCCESS) {
+                            //初始化渠道插件
+                        }
                     }
 
                     @Override

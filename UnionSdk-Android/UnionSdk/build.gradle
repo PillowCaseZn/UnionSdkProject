@@ -47,6 +47,7 @@ android {
 dependencies {
     implementation files('libs/com.pillowcase.logger-1.1.0.jar')
     implementation files('libs/com.pillowcase.utils-1.0.0.jar')
+    implementation files('libs\\com.google.code.gson-2.8.6.jar')
 }
 
 //Copy类型

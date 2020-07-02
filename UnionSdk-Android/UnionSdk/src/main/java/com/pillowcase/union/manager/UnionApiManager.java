@@ -3,6 +3,7 @@ package com.pillowcase.union.manager;
 import com.pillowcase.logger.LoggerUtils;
 import com.pillowcase.logger.impl.ILoggerOperation;
 import com.pillowcase.union.intefaces.IJsonCallBack;
+import com.pillowcase.union.modules.ApiResultBean;
 import com.pillowcase.union.modules.Code;
 import com.pillowcase.utils.NetUtils;
 
@@ -36,13 +37,15 @@ public class UnionApiManager implements ILoggerOperation {
     public void getChannelConfig(IJsonCallBack callBack) {
         try {
             log("getChannelConfig", "");
-            // TODO: 2020/7/1 判断网络是否连接成功
-
             if (!mNetUtils.isNetConnect()) {
                 callBack.onError(Code.NETWORK_ERROR, "请检查网络连接");
                 return;
             }
+            // TODO: 2020/7/2 请求后台，返回相关数据
 
+            ApiResultBean resultJson = new ApiResultBean();
+            resultJson.setCode(Code.SUCCESS);
+            callBack.onSuccess(resultJson.result());
         } catch (Exception e) {
             error(e, "getChannelConfig");
         }

@@ -6,6 +6,7 @@ package com.pillowcase.union.modules;
  * Description ：
  */
 public class Code {
+    public static final int SUCCESS = 200;
     /**
      * 验证错误
      */
