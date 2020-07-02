@@ -1,6 +1,6 @@
 ext {
     SdkVersion = '1.0.0'
-    SdkName = "com.pillowcase.union" + "_" + SdkVersion
+    SdkName = "com.pillowcase.union" + "_" + SdkVersion + '.jar'
 }
 apply plugin: 'com.android.library'
 
@@ -47,24 +47,42 @@ android {
 dependencies {
     implementation files('libs/com.pillowcase.logger-1.1.0.jar')
     implementation files('libs/com.pillowcase.utils-1.0.0.jar')
-    implementation files('libs\\com.google.code.gson-2.8.6.jar')
+    implementation files('libs/com.google.code.gson-2.8.6.jar')
 }
 
-//Copy类型
-task makeJar(type: Copy) {
+/**
+ * 合并Jar
+ */
+task MergeJar(type: Jar, dependsOn: ['build']) {
+    archiveName = SdkName
+    from(project.zipTree('build/libs/' + SdkName))
+    FileCollection collection = fileTree(dir: 'libs')
+    // 遍历文件集合
+    collection.each { File file ->
+        println "---->" + file.name
+        from(project.zipTree('libs/' + file.name))
+    }
+    destinationDir = file('build')
+}
+
+/**
+ * 生成Jar
+ */
+task BuildJar(type: Copy, dependsOn: ['build']) {
     //删除存在的
-    delete 'build/' + SdkName + '.jar'
+    delete 'build/' + SdkName
     //设置拷贝的文件
     from('build/intermediates/packaged-classes/release')
+    from(project.zipTree('libs/com.pillowcase.logger-1.1.0.jar'))
     //打进jar包后的文件目录
-    into('build')
+    into('build/libs')
     from fileTree(dir: 'src/main', includes: ['res/**'])
     include('classes.jar')
     //重命名
-    rename('classes.jar', SdkName + '.jar')
+    rename('classes.jar', SdkName)
 }
 
-makeJar.dependsOn(build)
+MergeJar.dependsOn(BuildJar, build)
 build.doLast {
-    makeJar
+    MergeJar
 }
