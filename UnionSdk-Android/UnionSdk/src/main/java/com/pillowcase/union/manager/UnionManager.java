@@ -21,6 +21,9 @@ import com.pillowcase.union.modules.Code;
 import com.pillowcase.union.modules.InitParams;
 import com.pillowcase.union.modules.Message;
 import com.pillowcase.union.modules.MetaDataConfig;
+import com.pillowcase.union.modules.PluginSupportMethod;
+import com.pillowcase.union.plugin.PluginPay;
+import com.pillowcase.union.plugin.PluginUser;
 import com.pillowcase.union.utils.MetaDataUtils;
 
 import java.lang.reflect.Constructor;
@@ -61,6 +64,8 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
      * SDK 回调接口
      */
     private ISdkCallbacks mSdkCallbacks;
+
+    private String pluginChannelUser, pluginChannelPay;
 
     public static UnionManager getInstance() {
         return ourInstance;
@@ -112,7 +117,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 String subPackageId = "";
 
                 //用户登录插件
-                String pluginChannelUser = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_USER);
+                pluginChannelUser = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_USER);
                 if (pluginChannelUser == null || pluginChannelUser.isEmpty()) {
                     log("init", "No Plugin Channel User Config , Use Default Plugin Channel User");
                     pluginChannelUser = "com.pillowcase.union.channels.SdkUser";
@@ -120,7 +125,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 log("init", "Plugin Channel User : " + pluginChannelUser);
 
                 //用户支付插件
-                String pluginChannelPay = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_PAY);
+                pluginChannelPay = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_PAY);
                 if (pluginChannelPay == null || pluginChannelPay.isEmpty()) {
                     log("init", "No Plugin Channel Pay Config , Use Default Plugin Channel Pay");
                     pluginChannelPay = "com.pillowcase.union.channels.SdkPay";
@@ -135,6 +140,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                         log("onSuccess", "Api Result Bean : " + bean);
                         if (bean.getCode() == Code.SUCCESS) {
                             //初始化渠道插件
+                            PluginUser.getInstance().init(pluginChannelUser);
+                            PluginPay.getInstance().init(pluginChannelPay);
+                        } else {
+                            mSdkCallbacks.onErrorCallback(bean.getCode(), "服务器数据请求错误");
                         }
                     }
 
@@ -159,6 +168,12 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
+            this.gameActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    PluginUser.getInstance().login();
+                }
+            });
         } catch (Exception e) {
             error(e, "login");
         }
@@ -172,6 +187,12 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
+            this.gameActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    PluginUser.getInstance().switchLogin();
+                }
+            });
         } catch (Exception e) {
             error(e, "switchLogin");
         }
@@ -185,6 +206,12 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
+            this.gameActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    PluginUser.getInstance().submitRoleInfo();
+                }
+            });
         } catch (Exception e) {
             error(e, "submitRoleInfo");
         }
@@ -198,6 +225,12 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
+            this.gameActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    PluginUser.getInstance().logout();
+                }
+            });
         } catch (Exception e) {
             error(e, "logout");
         }
@@ -211,6 +244,12 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
+            this.gameActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    PluginPay.getInstance().pay();
+                }
+            });
         } catch (Exception e) {
             error(e, "pay");
         }
@@ -220,8 +259,40 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     public void exit() {
         try {
             log("exit", "");
+            //判断渠道是否支持用户退出插件
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.EXIT)) {
+
+            } else {
+
+            }
         } catch (Exception e) {
             error(e, "exit");
+        }
+    }
+
+    @Override
+    public void realNameRegister() {
+        try {
+            log("realNameRegister", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
+        } catch (Exception e) {
+            error(e, "realNameRegister");
+        }
+    }
+
+    @Override
+    public void queryAntiAddiction() {
+        try {
+            log("queryAntiAddiction", "");
+            if (this.gameActivity == null) {
+                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                return;
+            }
+        } catch (Exception e) {
+            error(e, "queryAntiAddiction");
         }
     }
 
@@ -434,6 +505,11 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
 
     public Activity getGameActivity() {
         return gameActivity;
+    }
+
+    @Override
+    public boolean isSupportMethod(String methodName) {
+        return false;
     }
 
     @Override

@@ -6,5 +6,8 @@ package com.pillowcase.union.intefaces;
  * Description ： 渠道用户支付插件接口
  */
 public interface IPayPlugin extends IPlugin {
-
+    /**
+     * 支付
+     */
+    void pay();
 }

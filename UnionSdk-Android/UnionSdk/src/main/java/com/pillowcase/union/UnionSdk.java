@@ -82,6 +82,20 @@ public class UnionSdk implements ISdkMethods, IApplicationListener {
     }
 
     @Override
+    public void realNameRegister() {
+        if (manager != null) {
+            manager.realNameRegister();
+        }
+    }
+
+    @Override
+    public void queryAntiAddiction() {
+        if (manager != null) {
+            manager.queryAntiAddiction();
+        }
+    }
+
+    @Override
     public void onNewIntent(Activity gameActivity, Intent intent) {
         if (manager != null) {
             manager.onNewIntent(gameActivity, intent);
@@ -142,5 +156,13 @@ public class UnionSdk implements ISdkMethods, IApplicationListener {
         if (manager != null) {
             manager.onApplicationTerminate(application);
         }
+    }
+
+    @Override
+    public boolean isSupportMethod(String methodName) {
+        if (manager != null) {
+            return manager.isSupportMethod(methodName);
+        }
+        return false;
     }
 }
