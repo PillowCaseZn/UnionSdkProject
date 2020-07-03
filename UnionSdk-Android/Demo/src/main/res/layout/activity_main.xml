@@ -10,9 +10,39 @@
         android:id="@+id/login_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:padding="10dp"
         android:text="@string/login"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/logout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="onClick"
+        android:padding="10dp"
+        android:text="@string/logout"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/real_name_register_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:padding="10dp"
+        android:text="@string/realNameRegister"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/query_anti_addiction_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:padding="10dp"
+        android:text="@string/queryAntiAddiction"
         android:textColor="@android:color/black"
         android:textSize="14sp" />
 
@@ -20,17 +50,17 @@
         android:id="@+id/switch_account_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:padding="10dp"
         android:text="@string/switch_account"
-        android:onClick="onClick"
         android:textColor="@android:color/black"
         android:textSize="14sp" />
 
     <Button
         android:id="@+id/submit_role_info_btn"
         android:layout_width="match_parent"
-        android:onClick="onClick"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:padding="10dp"
         android:text="@string/submit_role_info"
         android:textColor="@android:color/black"
@@ -48,9 +78,9 @@
 
     <Button
         android:id="@+id/exit_btn"
-        android:onClick="onClick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:padding="10dp"
         android:text="@string/exit"
         android:textColor="@android:color/black"

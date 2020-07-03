@@ -19,4 +19,8 @@ public class Code {
      * 网络异常
      */
     public static final int NETWORK_ERROR = 403;
+    /**
+     * 插件异常
+     */
+    public static final int PLUGIN_ERROR = 404;
 }

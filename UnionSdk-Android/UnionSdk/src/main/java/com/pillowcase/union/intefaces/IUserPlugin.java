@@ -32,7 +32,7 @@ public interface IUserPlugin extends IPlugin {
     void exit();
 
     /***
-     * 实名注册方法
+     * 实名注册
      */
     void realNameRegister();
 

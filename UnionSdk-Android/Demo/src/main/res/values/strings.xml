@@ -5,4 +5,7 @@
     <string name="submit_role_info">提交角色信息</string>
     <string name="pay">支付</string>
     <string name="exit">退出游戏</string>
+    <string name="logout">注销账号</string>
+    <string name="realNameRegister">实名注册</string>
+    <string name="queryAntiAddiction">防沉迷系统查询接口</string>
 </resources>

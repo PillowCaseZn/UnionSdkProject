@@ -2,8 +2,10 @@ package com.pillowcase.union.manager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -165,15 +167,19 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
         try {
             log("login", "");
             if (this.gameActivity == null) {
-                mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
+                this.mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
-            this.gameActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    PluginUser.getInstance().login();
-                }
-            });
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.LOGIN)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().login();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
+            }
         } catch (Exception e) {
             error(e, "login");
         }
@@ -187,12 +193,16 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
-            this.gameActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    PluginUser.getInstance().switchLogin();
-                }
-            });
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.SWITCH_LOGIN)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().switchLogin();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
+            }
         } catch (Exception e) {
             error(e, "switchLogin");
         }
@@ -206,12 +216,16 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
-            this.gameActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    PluginUser.getInstance().submitRoleInfo();
-                }
-            });
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.SUBMIT_ROLE_INFO)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().submitRoleInfo();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
+            }
         } catch (Exception e) {
             error(e, "submitRoleInfo");
         }
@@ -225,12 +239,16 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
-            this.gameActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    PluginUser.getInstance().logout();
-                }
-            });
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.LOGOUT)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().logout();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
+            }
         } catch (Exception e) {
             error(e, "logout");
         }
@@ -244,12 +262,16 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
-            this.gameActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    PluginPay.getInstance().pay();
-                }
-            });
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.PAY)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginPay.getInstance().pay();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
+            }
         } catch (Exception e) {
             error(e, "pay");
         }
@@ -261,9 +283,30 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
             log("exit", "");
             //判断渠道是否支持用户退出插件
             if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.EXIT)) {
-
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().exit();
+                    }
+                });
             } else {
-
+                //自定义Dialog 实现退出窗口
+                AlertDialog.Builder builder = new AlertDialog.Builder(mInitParams.getGameActivity());
+                builder.setTitle("退出确认");
+                builder.setMessage("现在还早，要不要再玩一会？");
+                builder.setCancelable(true);
+                builder.setPositiveButton("好吧", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+                builder.setNeutralButton("一会再玩", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //退出游戏
+                        mInitParams.getGameActivity().finish();
+                        System.exit(0);
+                    }
+                });
+                builder.show();
             }
         } catch (Exception e) {
             error(e, "exit");
@@ -278,6 +321,16 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
             }
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.REAL_NAME_REGISTER)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().realNameRegister();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
+            }
         } catch (Exception e) {
             error(e, "realNameRegister");
         }
@@ -290,6 +343,16 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
+            }
+            if (PluginUser.getInstance().isSupportMethod(PluginSupportMethod.QUERY_ANTI_ADDICTION)) {
+                this.gameActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PluginUser.getInstance().queryAntiAddiction();
+                    }
+                });
+            } else {
+                this.mSdkCallbacks.onErrorCallback(Code.PLUGIN_ERROR, Message.PLUGIN_NOT_SUPPORT);
             }
         } catch (Exception e) {
             error(e, "queryAntiAddiction");

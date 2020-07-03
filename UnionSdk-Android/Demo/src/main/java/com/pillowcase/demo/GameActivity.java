@@ -10,6 +10,7 @@ import android.view.View;
 import com.pillowcase.union.UnionSdk;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
 import com.pillowcase.union.modules.InitParams;
+import com.pillowcase.union.modules.PluginSupportMethod;
 
 /**
  * Author      : PillowCase
@@ -44,6 +45,19 @@ public class GameActivity extends Activity {
         switch (view.getId()) {
             case R.id.login_btn:
                 UnionSdk.getInstance().login();
+                break;
+            case R.id.logout_btn:
+                UnionSdk.getInstance().logout();
+                break;
+            case R.id.real_name_register_btn:
+                if (UnionSdk.getInstance().isSupportMethod(PluginSupportMethod.REAL_NAME_REGISTER)) {
+                    UnionSdk.getInstance().realNameRegister();
+                }
+                break;
+            case R.id.query_anti_addiction_btn:
+                if (UnionSdk.getInstance().isSupportMethod(PluginSupportMethod.QUERY_ANTI_ADDICTION)) {
+                    UnionSdk.getInstance().queryAntiAddiction();
+                }
                 break;
             case R.id.switch_account_btn:
                 UnionSdk.getInstance().switchLogin();
