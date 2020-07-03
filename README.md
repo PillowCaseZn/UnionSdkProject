@@ -12,12 +12,10 @@
 
 
 ## UpdateLog - [更新日志](ReadMe/UPDATELOG.md)
-#### 1.0.0 - 2020-06-30
+#### 1.0.0 - 2020-07-03
 - Update - 更新
-	- gitignore 文件
-	- Demo 的布局文件和java 代码
-	- UnionSdk Application逻辑、全局生命周期的监听、添加代码注释
-	- 初始化逻辑
+	- 插件初始化，逻辑编写
+    - build.gradle Jar文件输出Task
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
