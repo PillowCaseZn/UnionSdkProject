@@ -17,7 +17,7 @@ import com.pillowcase.logger.impl.ILoggerOperation;
 import com.pillowcase.union.intefaces.IApplicationListener;
 import com.pillowcase.union.intefaces.IJsonCallBack;
 import com.pillowcase.union.intefaces.ISdkCallbacks;
-import com.pillowcase.union.intefaces.ISdkMethods;
+import com.pillowcase.union.intefaces.ISdkManagerMethods;
 import com.pillowcase.union.modules.ApiResultBean;
 import com.pillowcase.union.modules.Code;
 import com.pillowcase.union.modules.InitParams;
@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * Created On  ： 2020-06-29 11:59
  * Description ： 主要逻辑
  */
-public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerOperation {
+public class UnionManager implements ISdkManagerMethods, IApplicationListener, ILoggerOperation {
     private static final UnionManager ourInstance = new UnionManager();
 
     private LoggerUtils mLoggerUtils;
@@ -65,7 +65,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
     /**
      * SDK 回调接口
      */
-    private ISdkCallbacks mSdkCallbacks;
+    private UnionSdkCallback mSdkCallbacks;
 
     private String pluginChannelUser, pluginChannelPay;
 
@@ -84,7 +84,7 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
         try {
             log("init", "");
             if (this.mSdkCallbacks == null) {
-                this.mSdkCallbacks = callbacks;
+                this.mSdkCallbacks = new UnionSdkCallback(callbacks);
             }
 
             if (isInit) {
@@ -134,26 +134,10 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
                 }
                 log("init", "Plugin Channel Pay : " + pluginChannelPay);
 
-                //请求服务器，获取渠道配置参数信息
-                UnionApiManager.getInstance().getChannelConfig(new IJsonCallBack() {
-                    @Override
-                    public void onSuccess(String json) {
-                        ApiResultBean bean = new Gson().fromJson(json, ApiResultBean.class);
-                        log("onSuccess", "Api Result Bean : " + bean);
-                        if (bean.getCode() == Code.SUCCESS) {
-                            //初始化渠道插件
-                            PluginUser.getInstance().init(pluginChannelUser);
-                            PluginPay.getInstance().init(pluginChannelPay);
-                        } else {
-                            mSdkCallbacks.onErrorCallback(bean.getCode(), "服务器数据请求错误");
-                        }
-                    }
+                //初始化渠道插件
+                PluginUser.getInstance().init(pluginChannelUser);
+                PluginPay.getInstance().init(pluginChannelPay);
 
-                    @Override
-                    public void onError(int code, String errorMsg) {
-                        mSdkCallbacks.onErrorCallback(code, errorMsg);
-                    }
-                });
             } else {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
             }
@@ -499,6 +483,43 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
         }
     }
 
+    @Override
+    public boolean isSupportMethod(String methodName) {
+        return false;
+    }
+
+    @Override
+    public void getChannelConfig(IJsonCallBack callBack) {
+        try {
+            log("getChannelConfig", "");
+            //请求服务器，获取渠道配置参数信息
+            UnionApiManager.getInstance().getChannelConfig(new IJsonCallBack() {
+                @Override
+                public void onSuccess(String json) {
+                    gameActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ApiResultBean bean = new Gson().fromJson(json, ApiResultBean.class);
+                            log("onSuccess", "Api Result Bean : " + bean);
+                            if (bean.getCode() == Code.SUCCESS) {
+                                callBack.onSuccess(bean.getMessage());
+                            } else {
+                                callBack.onError(bean.getCode(), "服务器数据请求错误");
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(int code, String errorMsg) {
+                    callBack.onError(code, errorMsg);
+                }
+            });
+        } catch (Exception e) {
+            error(e, "getChannelConfig");
+        }
+    }
+
     /**
      * 去掉在Android P上的提醒弹窗 （Detected problems with API compatibility(visit g.co/dev/appcompat for more info)
      */
@@ -570,9 +591,8 @@ public class UnionManager implements ISdkMethods, IApplicationListener, ILoggerO
         return gameActivity;
     }
 
-    @Override
-    public boolean isSupportMethod(String methodName) {
-        return false;
+    public UnionSdkCallback getSdkCallbacks() {
+        return mSdkCallbacks;
     }
 
     @Override
