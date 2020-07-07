@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
  * Description ： 主要逻辑
  */
 public class UnionManager implements ISdkManagerMethods, IApplicationListener, ILoggerOperation {
+    @SuppressLint("StaticFieldLeak")
     private static final UnionManager ourInstance = new UnionManager();
 
     private LoggerUtils mLoggerUtils;
@@ -56,7 +57,7 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     /**
      * 是否已成功初始化
      */
-    private boolean isInit = false;
+    public boolean isInit = false;
 
     /**
      * 初始化参数
@@ -66,8 +67,6 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
      * SDK 回调接口
      */
     private UnionSdkCallback mSdkCallbacks;
-
-    private String pluginChannelUser, pluginChannelPay;
 
     public static UnionManager getInstance() {
         return ourInstance;
@@ -119,7 +118,7 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
                 String subPackageId = "";
 
                 //用户登录插件
-                pluginChannelUser = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_USER);
+                String pluginChannelUser = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_USER);
                 if (pluginChannelUser == null || pluginChannelUser.isEmpty()) {
                     log("init", "No Plugin Channel User Config , Use Default Plugin Channel User");
                     pluginChannelUser = "com.pillowcase.union.channels.SdkUser";
@@ -127,7 +126,7 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
                 log("init", "Plugin Channel User : " + pluginChannelUser);
 
                 //用户支付插件
-                pluginChannelPay = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_PAY);
+                String pluginChannelPay = MetaDataUtils.getInstance().getMetaData(this.gameActivity, MetaDataConfig.PLUGIN_CHANNEL_PAY);
                 if (pluginChannelPay == null || pluginChannelPay.isEmpty()) {
                     log("init", "No Plugin Channel Pay Config , Use Default Plugin Channel Pay");
                     pluginChannelPay = "com.pillowcase.union.channels.SdkPay";
@@ -137,7 +136,6 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
                 //初始化渠道插件
                 PluginUser.getInstance().init(pluginChannelUser);
                 PluginPay.getInstance().init(pluginChannelPay);
-
             } else {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
             }
@@ -150,6 +148,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void login() {
         try {
             log("login", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 this.mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
@@ -173,6 +175,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void switchLogin() {
         try {
             log("switchLogin", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
@@ -196,6 +202,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void submitRoleInfo() {
         try {
             log("submitRoleInfo", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
@@ -219,6 +229,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void logout() {
         try {
             log("logout", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
@@ -242,6 +256,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void pay() {
         try {
             log("pay", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
@@ -301,6 +319,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void realNameRegister() {
         try {
             log("realNameRegister", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
@@ -324,6 +346,10 @@ public class UnionManager implements ISdkManagerMethods, IApplicationListener, I
     public void queryAntiAddiction() {
         try {
             log("queryAntiAddiction", "");
+            if (!isInit) {
+                this.mSdkCallbacks.onErrorCallback(Code.INIT_FAILED, Message.INIT_FAILED);
+                return;
+            }
             if (this.gameActivity == null) {
                 mSdkCallbacks.onErrorCallback(Code.VALIDATION_ERROR, Message.CHECK_INIT_PARAMS);
                 return;
