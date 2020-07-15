@@ -7,6 +7,7 @@ package com.pillowcase.union.modules;
  */
 public class Message {
     public static final String IS_INIT = "已成功初始化";
+    public static final String INIT_FAILED = "初始化失败";
     public static final String CHECK_INIT_PARAMS = "请检查初始化参数配置";
     public static final String PLUGIN_NOT_SUPPORT = "插件不支持";
 }

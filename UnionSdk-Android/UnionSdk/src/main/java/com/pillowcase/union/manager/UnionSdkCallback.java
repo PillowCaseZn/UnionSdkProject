@@ -24,6 +24,9 @@ public class UnionSdkCallback implements ISdkCallbacks, ILoggerOperation {
     public void initSuccess() {
         try {
             log("initSuccess", "");
+            UnionManager.getInstance().isInit = true;
+
+            mSdkCallbacks.initSuccess();
         } catch (Exception e) {
             error(e, "initSuccess");
         }

@@ -23,4 +23,8 @@ public class Code {
      * 插件异常
      */
     public static final int PLUGIN_ERROR = 404;
+    /**
+     * 初始化失败
+     */
+    public static final int INIT_FAILED = 405;
 }
